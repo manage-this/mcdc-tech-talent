@@ -1,5 +1,6 @@
 name: tech_talent
 channels:
+  - conda-forge
   - defaults
 dependencies:
   - python=3.8.10=hdbf39b2_7
@@ -10,3 +11,4 @@ dependencies:
   - google-api-python-client=2.13.0=pyhd8ed1ab_0
   - google-auth-httplib2=0.1.0=pyhd8ed1ab_0
   - google-auth-oauthlib=0.4.4=pyhd8ed1ab_0
+  - gspread=3.7.0=pyh44b312d_0
