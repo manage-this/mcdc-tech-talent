@@ -1,6 +1,9 @@
 # Google and other authentication files
 key.json
 
+# raw data files
+*.xlsx
+
 # IDE stuff
 .idea/
 .vscode/
