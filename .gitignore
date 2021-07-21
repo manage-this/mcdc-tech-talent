@@ -1,3 +1,13 @@
+# Google and other authentication files
+key.json
+
+# raw data files
+*.xlsx
+
+# IDE stuff
+.idea/
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
