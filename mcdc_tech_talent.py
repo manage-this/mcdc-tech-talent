@@ -27,7 +27,7 @@ def download_project_data(secret):
                                  file_name=DATA_DIR,
                                  mime_type='application/vnd.google-apps.folder')
 
-    sub_folders = ['bls', 'bg', 'lookups']
+    sub_folders = ['bls', 'bg', 'ipeds', 'lookups']
 
     for folder in sub_folders:
         dl_folder_id = get_file_id(service, folder, parent_id=data_folder_id)
