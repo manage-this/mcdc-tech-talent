@@ -13,7 +13,9 @@ Anaconda command prompt:
 
 ```
 # Clone this repository
-git clone https://github.com/manage-this/mcdc-tech-talent.git
+git clone https://github.com/mcdc-tableau/mcdc-tech-talent.git
+
+# Alternatively, download the code as a zip file.
 
 # Go into the repository
 cd mcdc-tech-talent
@@ -41,8 +43,14 @@ Go to this project's root directory from your Anaconda command prompt:
 # Activate the virtual environment
 conda activate tech_talent
 
-# Run the main data processing script
-python mcdc_tech_talent.py
+# Start an instance of Jupyter Notebook
+jupyter notebook
+
+# When the browser loads into Jupyter Notebook, find and load the notebook used to preprocess the raw data files:
+tech_talent_data_preprocessing.ipynb
+
+# After the data has been preprocessed, find and load the notebook used to load the data to Google Sheets:
+tech_talent_data_upload_google.ipynb
 ```
 
-# License
+For questions or assistance, e-mail Sam Lee @ gti85@fastmail.com.
