@@ -11,7 +11,8 @@ def load_msa_lookup(data_path):
 
     :param data_path: a pathlib.Path() object, location of data file folder
 
-    :return msa_lookup: a dictionary containing MSA code to peer type lookup
+    :return msa_lookup: a dictionary of dictionaries containing MSA code to
+        peer type lookup and MSA code to MSA name lookup
 
     """
 
@@ -20,9 +21,12 @@ def load_msa_lookup(data_path):
 
     lookup_file_path = data_path / lookup_dir / msa_file_name
 
+    msa_lookup = {}
+
     try:
         lk_msa = pd.read_excel(lookup_file_path)
-        msa_lookup = dict(zip(lk_msa['area'], lk_msa['peer_type']))
+        msa_lookup['peer_type'] = dict(zip(lk_msa['area'], lk_msa['peer_type']))
+        msa_lookup['area_title'] = dict(zip(lk_msa['area'], lk_msa['area_title']))
         print("...MSA lookup table loaded.")
         return msa_lookup
     except Exception as e:
@@ -128,7 +132,7 @@ def map_soc(df, report_year, soc_lookup):
 
     # Recombine all rows
     df_combined = pd.concat([df_matched, df_missing])
-    df_combined['oes_title_2019'] = df_combined['oes_code_2019'].map(soc_lookup['1919'])
+    df_combined['oes_title_2019'] = df_combined['oes_code_2019'].map(soc_lookup['19'])
 
     df_f = pd.concat([df_combined, df_totals])
 
@@ -148,9 +152,23 @@ def map_peer_type(df, msa_lookup):
     """
 
     # Map MSA areas to peer type categories
-    df['peer_type'] = df['area'].map(msa_lookup)
+    df['peer_type'] = df['area'].map(msa_lookup['peer_type'])
     df['peer_type'].fillna("All Other MSA", inplace=True)
     print("...Applied MSA lookups.")
+
+    return df
+
+
+def map_msa_names(df, msa_lookup):
+    """ Helper function to handle known MSA name changes/inconsistencies
+
+    :param df: A pandas dataframe, BLS OEWS data set
+    :param msa_lookup: a dictionary containing MSA code to peer type lookup
+
+    :return df: A pandas dataframe
+    """
+
+    df['area_title'] = df['area'].map(msa_lookup['area_title'])
 
     return df
 
@@ -186,13 +204,17 @@ def clean_bls(data_path):
 
     for f in bls_folder.glob('**/*.xlsx'):
         print('Processing {} ...'.format(f))
-        df = pd.read_excel(f)
+
+        with open(f, 'rb') as file:
+            df = pd.read_excel(file)
+
         df = much_consistency(df)
 
         report_year = int(re.search(r"(M)([1-9]\d{3,})(_)", str(f))[2])
 
         df = map_soc(df, report_year, soc_lookup)
         df = map_peer_type(df, msa_lookup)
+
         df = map_nulls(df)
         df['report_year'] = report_year
 
@@ -209,6 +231,8 @@ def clean_bls(data_path):
 
     df_merged = df_merged[df_merged['peer_type'] != 'All Other MSA']
     #df_merged = df_merged[df_merged['oes_code_2019'].str.contains('15-')]
+
+    df_merged = map_msa_names(df_merged, msa_lookup)
 
     return df_merged
 
